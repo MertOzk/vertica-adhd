@@ -1,0 +1,52 @@
+[project]
+name = "vertica-adhd"
+version = "0.1.0"
+description = "Self-hosted ADHD coaching agent for the Vertica homelab"
+requires-python = ">=3.12"
+dependencies = [
+    # Web
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.12",
+    "sse-starlette>=2.1",
+    # DB
+    "sqlmodel>=0.0.22",
+    "alembic>=1.13",        # kept for future migrations, optional for v1
+    # Config
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    # LLM
+    "openai>=1.55",          # points at the local router
+    # Scheduling
+    "apscheduler>=3.10",
+    "croniter>=3.0",
+    # HTTP client for HA
+    "httpx>=0.27",
+    # Markdown round-trip
+    "python-frontmatter>=1.1",
+    # Misc
+    "python-dateutil>=2.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Vertica · Today{% endblock %}
+{% block body_class %}mobile{% endblock %}
+{% block body %}
+<header class="m-head">
+  <h1>Hi {{ user.name if user else 'there' }}</h1>
+  <div class="m-stats">
+    Day {{ user.current_streak if user else 0 }} · {{ user.total_xp if user else 0 }} XP
+  </div>
+</header>
+
+<nav class="m-tabs">
+  <a href="/m/chat?protocol=morning">Morning</a>
+  <a href="/m/chat?protocol=evening">Evening</a>
+  <a href="/m/chat?protocol=unstuck">I'm stuck</a>
+  <a href="/m/chat?protocol=adhoc">Chat</a>
+</nav>
+
+<p class="muted m-note">Mobile today-view is coming soon. The dashboard at <code>/</code> has the full picture.</p>
+{% endblock %}

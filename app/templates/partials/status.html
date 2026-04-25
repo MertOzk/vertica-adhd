@@ -1,0 +1,74 @@
+{% if error == "no_user" %}
+  <div class="empty">
+    <p class="muted">No user seeded. Run <code>scripts/seed.py</code>.</p>
+  </div>
+{% else %}
+
+<section class="clock-block">
+  <div class="time">{{ now.strftime("%H:%M") }}</div>
+  <div class="date">{{ now.strftime("%A, %B %-d") }}</div>
+</section>
+
+<hr class="hair" />
+
+<section class="block">
+  <h2 class="eyebrow">Today's top 3</h2>
+  {% if top3 %}
+    <ul class="top3">
+      {% for t in top3 %}
+        <li class="task {{ t.category }} {{ t.status }}">
+          <span class="bullet">{% if t.status == 'done' %}●{% else %}○{% endif %}</span>
+          <span class="cat">{{ t.category | upper }}</span>
+          <span class="text">{{ t.text }}</span>
+          {% if t.first_2min_step and t.status != 'done' %}
+            <div class="first-step">first: {{ t.first_2min_step }}</div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No plan yet today. Tap to start a morning plan.</p>
+  {% endif %}
+</section>
+
+<hr class="hair" />
+
+<section class="block">
+  <h2 class="eyebrow">Right now</h2>
+  {% if current %}
+    <div class="now-text">Working on: <strong>{{ current.text }}</strong></div>
+  {% else %}
+    <div class="now-text muted">Nothing active. Pick one.</div>
+  {% endif %}
+</section>
+
+<hr class="hair" />
+
+<section class="block streak-block">
+  <div class="streak-row">
+    <span class="streak-pill">Day {{ user.current_streak }}</span>
+    <span class="level-pill">Level {{ user.level }} · {{ level_name }}</span>
+    <span class="xp-pill">{{ user.total_xp }} XP</span>
+  </div>
+  <div class="progress">
+    <div class="progress-fill" style="width: {{ xp_in_level }}%;"></div>
+  </div>
+  <div class="progress-label">{{ xp_in_level }} / {{ xp_needed }} to level {{ user.level + 1 }}</div>
+</section>
+
+<hr class="hair" />
+
+<section class="block">
+  <h2 class="eyebrow">Recent wins</h2>
+  {% if wins %}
+    <ul class="wins">
+      {% for w in wins %}
+        <li>· {{ w.text }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">No wins logged yet — first one's coming.</p>
+  {% endif %}
+</section>
+
+{% endif %}

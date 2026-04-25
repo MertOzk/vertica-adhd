@@ -1,0 +1,255 @@
+/* Vertica ADHD — Braun-meets-monastery portrait dashboard.
+   Design brief in ARCHITECTURE.md §7. Keep this file small and opinionated. */
+
+:root {
+  --bg: #0e0e12;
+  --fg: #f5efe6;
+  --muted: #7a7a82;
+  --hair: #1e1e26;
+  --accent-must: #ff6b5a;
+  --accent-should: #f5efe6;
+  --accent-want: #7a7a82;
+  --accent-good: #7ecb7e;
+
+  --size-clock: clamp(120px, 22vw, 240px);
+  --size-date: clamp(28px, 3.5vw, 52px);
+  --size-eyebrow: 22px;
+  --size-body: 30px;
+  --size-small: 20px;
+
+  --pad: clamp(24px, 3vw, 56px);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+body.cursor-hidden { cursor: none; }
+
+/* -------- Portrait dashboard -------- */
+body.portrait {
+  min-height: 100vh;
+}
+
+.dash {
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vh, 40px);
+  min-height: 100vh;
+}
+
+.clock-block {
+  text-align: left;
+}
+
+.time {
+  font-size: var(--size-clock);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.date {
+  font-size: var(--size-date);
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: 0.3em;
+  letter-spacing: 0.02em;
+}
+
+.hair {
+  border: 0;
+  border-top: 1px solid var(--hair);
+  margin: 0;
+}
+
+.block { display: flex; flex-direction: column; gap: 12px; }
+
+.eyebrow {
+  font-size: var(--size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Top 3 */
+.top3 {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 18px;
+  font-size: var(--size-body);
+}
+
+.task {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: 18px;
+  row-gap: 4px;
+  align-items: baseline;
+  line-height: 1.25;
+}
+.task .bullet { font-size: 1.1em; line-height: 1; }
+.task .cat {
+  font-size: 0.55em;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.task.must .cat { color: var(--accent-must); }
+.task.done { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.task .first-step {
+  grid-column: 3;
+  font-size: 0.65em;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Right now */
+.now-text { font-size: var(--size-body); }
+.now-text strong { font-weight: 600; }
+
+/* Streak block */
+.streak-block { gap: 10px; }
+.streak-row {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  font-size: var(--size-eyebrow);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.streak-pill, .level-pill, .xp-pill {
+  padding: 6px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-weight: 500;
+}
+.streak-pill { color: var(--accent-good); border-color: currentColor; }
+
+.progress {
+  height: 6px;
+  background: var(--hair);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--fg);
+  transition: width 600ms ease-out;
+}
+.progress-label {
+  font-size: var(--size-small);
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+/* Wins */
+.wins {
+  list-style: none; padding: 0; margin: 0;
+  font-size: var(--size-body);
+  display: flex; flex-direction: column; gap: 10px;
+  color: var(--muted);
+}
+
+.muted { color: var(--muted); }
+
+/* -------- Mobile view -------- */
+body.mobile {
+  background: var(--bg);
+  color: var(--fg);
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.m-head h1 { font-size: 36px; font-weight: 300; margin: 0 0 6px 0; }
+.m-stats { color: var(--muted); font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+.m-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 32px;
+}
+.m-tabs a {
+  display: block;
+  padding: 18px;
+  background: #16161c;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  color: var(--fg);
+  text-decoration: none;
+  font-weight: 500;
+  text-align: center;
+}
+.m-note { margin-top: 28px; font-size: 14px; }
+
+/* Chat */
+body.chat { display: flex; flex-direction: column; min-height: 100vh; }
+.chat-log {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.turn {
+  padding: 12px 16px;
+  border-radius: 16px;
+  max-width: 85%;
+  line-height: 1.45;
+}
+.turn.user {
+  align-self: flex-end;
+  background: #262630;
+}
+.turn.assistant {
+  align-self: flex-start;
+  background: #16161c;
+  border: 1px solid var(--hair);
+}
+.composer {
+  display: flex; gap: 8px;
+  position: sticky; bottom: 0;
+  background: var(--bg);
+  padding: 12px 0;
+}
+.composer input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--hair);
+  background: #16161c;
+  color: var(--fg);
+  font-size: 17px;
+}
+.composer button {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.back { color: var(--muted); text-decoration: none; font-size: 14px; }
+
+code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  background: #16161c;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.empty { padding: 10vh 0; text-align: center; }

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Vertica{% endblock %}
+{% block body_class %}portrait{% endblock %}
+{% block body %}
+<main class="dash"
+      hx-get="/partials/status"
+      hx-trigger="every 20s"
+      hx-swap="innerHTML">
+  {% include "partials/status.html" %}
+</main>
+
+<script>
+  // Hide cursor after inactivity for ambient mode
+  let hideTimer;
+  const body = document.body;
+  function showCursor() {
+    body.classList.remove('cursor-hidden');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => body.classList.add('cursor-hidden'), 3000);
+  }
+  ['mousemove','touchstart','keydown'].forEach(e => document.addEventListener(e, showCursor));
+  showCursor();
+</script>
+{% endblock %}

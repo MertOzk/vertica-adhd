@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Vertica · {{ protocol | capitalize }}{% endblock %}
+{% block body_class %}mobile chat{% endblock %}
+{% block body %}
+<header class="m-head">
+  <h1>{{ protocol | capitalize }}</h1>
+  <a href="/m/" class="back">← back</a>
+</header>
+
+<main id="log" class="chat-log"></main>
+
+<form id="composer" class="composer">
+  <input id="msg" type="text" placeholder="type…" autocomplete="off" autofocus />
+  <button type="submit">Send</button>
+</form>
+
+<script>
+  const protocol = "{{ protocol }}";
+  let conversationId = null;
+  const log = document.getElementById('log');
+  const form = document.getElementById('composer');
+  const msg = document.getElementById('msg');
+
+  function append(role, text) {
+    const div = document.createElement('div');
+    div.className = 'turn ' + role;
+    div.textContent = text;
+    log.appendChild(div);
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  async function start() {
+    const r = await fetch(`/chat/${protocol}/start`, { method: 'POST' });
+    const data = await r.json();
+    conversationId = data.conversation_id;
+    if (data.reply) append('assistant', data.reply);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = msg.value.trim();
+    if (!text) return;
+    append('user', text);
+    msg.value = '';
+    const r = await fetch('/chat/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversation_id: conversationId, text }),
+    });
+    const data = await r.json();
+    if (data.reply) append('assistant', data.reply);
+  });
+
+  start();
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+.env
+data/*
+!data/.gitkeep
+!data/brain/
+data/brain/daily/*.md
+data/*.db
+data/*.db-journal
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+dist/
+build/
+*.egg-info/
+.DS_Store

@@ -1,0 +1,37 @@
+# This is a standalone compose file for developing/running just the ADHD agent.
+# When deploying to the Vertica homelab, merge the `vertica-adhd` service block into
+# the main vertica compose file and point it at the shared `vertica` network
+# (so it can reach vertica-router and homeassistant by service name).
+
+services:
+  vertica-adhd:
+    build: .
+    container_name: vertica-adhd
+    restart: unless-stopped
+    ports:
+      - "8088:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    # In the real homelab, replace the below with:
+    #   networks: [vertica]
+    # and remove the ports mapping (Caddy handles ingress).
+    networks:
+      - default
+
+  # Dev-only stub of the router. Comment this out on the homelab where the
+  # real vertica-router container provides the same endpoint.
+  vertica-router-stub:
+    image: ghcr.io/berriai/litellm-database:main-stable
+    container_name: vertica-router-stub
+    restart: unless-stopped
+    profiles: ["dev"]
+    environment:
+      # Drop in ANTHROPIC_API_KEY for dev; in prod the real router handles auth.
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    ports:
+      - "8080:4000"
+    command: >
+      --model claude-sonnet-4-6
+      --host 0.0.0.0 --port 4000
