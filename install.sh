@@ -125,7 +125,26 @@ fi
 
 # ---------- pull + start ----------
 say "Pulling image ${IMAGE}"
-( cd "${INSTALL_DIR}" && docker compose pull )
+PULL_LOG=$(mktemp)
+trap 'rm -f "${PULL_LOG}"' EXIT
+
+if ! ( cd "${INSTALL_DIR}" && docker compose pull ) 2>&1 | tee "${PULL_LOG}"; then
+  if grep -qE "denied|unauthorized|authentication required|requested access to the resource is denied" "${PULL_LOG}"; then
+    echo
+    warn "The image ${IMAGE} is private and your Docker isn't logged in to ghcr.io."
+    echo
+    echo "  ${BOLD}One-time setup:${RESET}"
+    echo "    1. Create a GitHub Personal Access Token (classic) with the ${BOLD}read:packages${RESET} scope:"
+    echo "         ${DIM}https://github.com/settings/tokens/new?scopes=read:packages&description=ghcr-pull${RESET}"
+    echo "    2. Copy the token, then run:"
+    echo "         ${BOLD}docker login ghcr.io -u MertOzk${RESET}"
+    echo "         (paste the token as the password)"
+    echo "    3. Re-run this installer."
+    echo
+    die "docker pull failed: not authenticated to ghcr.io"
+  fi
+  die "docker pull failed (see output above)"
+fi
 
 say "Starting vertica-adhd"
 ( cd "${INSTALL_DIR}" && docker compose up -d )

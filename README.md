@@ -29,6 +29,24 @@ The installer:
 
 Re-running it is safe — it won't overwrite an existing `.env`.
 
+### Authenticating to the image registry (one-time)
+
+The Docker image is published to GitHub Container Registry as a **private** package.
+Before the installer can pull it, log Docker into `ghcr.io` once per machine:
+
+1. Create a GitHub Personal Access Token (classic) with the `read:packages` scope:
+   <https://github.com/settings/tokens/new?scopes=read:packages&description=ghcr-pull>
+2. Copy the token, then run:
+   ```bash
+   docker login ghcr.io -u MertOzk
+   # paste the token as the password
+   ```
+3. Now run the installer.
+
+The credential is saved in `~/.docker/config.json` and reused by `docker compose pull` from
+then on. If you skip this step, the installer will detect the auth failure and print these
+same instructions before exiting cleanly.
+
 ### Update later
 
 ```bash
